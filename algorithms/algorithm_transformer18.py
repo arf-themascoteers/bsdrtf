@@ -37,10 +37,10 @@ class ANN(nn.Module):
         self.indices = nn.Parameter(torch.tensor([init_vals[i + 1] for i in range(self.target_size)], requires_grad=True).to(self.device))
         if self.mode in ["static", "semi"]:
             self.indices.requires_grad = False
-        d_model = 32
+        d_model = 16
         self.embedding = nn.Sequential(nn.Linear(1, d_model), nn.GELU())
         self.pos_encoding = nn.Parameter(torch.zeros(1, target_size, d_model))
-        encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=4, dim_feedforward=64, batch_first=True)
+        encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=8, dim_feedforward=64, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
         self.fc_out = nn.Linear(target_size * d_model, 1)
 
@@ -60,7 +60,7 @@ class ANN(nn.Module):
 
 
 
-class Algorithm_transformer17(Algorithm):
+class Algorithm_transformer18(Algorithm):
     def __init__(self, dataset, train_x, train_y, test_x, test_y, target_size, fold, scaler_y, mode, train_size, reporter, verbose):
         super().__init__(dataset, train_x, train_y, test_x, test_y, target_size, fold, scaler_y, mode, train_size, reporter, verbose)
 

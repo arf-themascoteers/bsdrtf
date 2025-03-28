@@ -39,7 +39,7 @@ class ANN(nn.Module):
             self.indices.requires_grad = False
         d_model = 32
         self.embedding = nn.Sequential(nn.Linear(1, d_model), nn.GELU())
-        self.pos_encoding = nn.Parameter(torch.zeros(1, target_size, d_model))
+        self.register_buffer("pos_encoding", self.get_sinusoidal_encoding(target_size, d_model))
         encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=4, dim_feedforward=64, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
         self.fc_out = nn.Linear(target_size * d_model, 1)
@@ -58,9 +58,19 @@ class ANN(nn.Module):
     def get_indices(self):
         return self.indices
 
+    @staticmethod
+    def get_sinusoidal_encoding(length, d_model):
+        position = torch.arange(length).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, d_model, 2) * (-torch.log(torch.tensor(10000.0)) / d_model))
+        pe = torch.zeros(length, d_model)
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        return pe.unsqueeze(0)
 
 
-class Algorithm_transformer17(Algorithm):
+
+
+class Algorithm_transformer19(Algorithm):
     def __init__(self, dataset, train_x, train_y, test_x, test_y, target_size, fold, scaler_y, mode, train_size, reporter, verbose):
         super().__init__(dataset, train_x, train_y, test_x, test_y, target_size, fold, scaler_y, mode, train_size, reporter, verbose)
 
