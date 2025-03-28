@@ -6,7 +6,7 @@ if __name__ == '__main__':
     tag = f"run_32_11_16"
     tasks = {
         "algorithms": ["transformer11","transformer12","transformer13","transformer14","transformer15","transformer16"],
-        "datasets": ["min_lucas"],
+        "datasets": ["lucas"],
         "target_sizes": [32],
         "scale_y": ["robust"],
         "mode": ["dyn"],

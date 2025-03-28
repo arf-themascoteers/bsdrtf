@@ -65,6 +65,7 @@ class ANN(nn.Module):
 
     def forward(self, linterp):
         x,i = linterp(self.get_indices())
+        i = i.unsqueeze(0).repeat(x.shape[0], 1, 1)
         x = self.embedding(x)
         x = x + i
         x = self.transformer(x)
@@ -127,10 +128,10 @@ class Algorithm_transformer14(Algorithm):
         return self
 
     def predict_train(self):
-        return self.ann(self.linterp_train)[0]
+        return self.ann(self.linterp_train)
 
     def predict_test(self):
-        return self.ann(self.linterp_test)[0]
+        return self.ann(self.linterp_test)
 
     def write_columns(self):
         if not self.verbose:

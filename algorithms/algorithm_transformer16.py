@@ -125,10 +125,10 @@ class Algorithm_transformer16(Algorithm):
         return self
 
     def predict_train(self):
-        return self.ann(self.linterp_train)[0]
+        return self.ann(self.linterp_train)
 
     def predict_test(self):
-        return self.ann(self.linterp_test)[0]
+        return self.ann(self.linterp_test)
 
     def write_columns(self):
         if not self.verbose:
