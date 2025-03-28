@@ -2,7 +2,7 @@ from task_runner import TaskRunner
 
 if __name__ == '__main__':
     train_sizes = [0.75]
-    verbose = True
+    verbose = False
     tag = f"run_32_25_26_27"
     tasks = {
         "algorithms": ["transformer25","transformer26","transformer27"],
