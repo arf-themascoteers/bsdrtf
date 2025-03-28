@@ -39,7 +39,7 @@ class ANN(nn.Module):
             self.indices.requires_grad = False
         d_model = 32
         self.embedding = nn.Linear(1, d_model)
-        self.wavelength_embedding = nn.Linear(1, d_model)
+        self.embedding = nn.Sequential(nn.Linear(1, d_model), nn.GELU())
         self.pos_encoding = nn.Parameter(torch.zeros(1, target_size, d_model))
         encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=4, dim_feedforward=64, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)

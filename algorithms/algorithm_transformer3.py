@@ -39,7 +39,6 @@ class ANN(nn.Module):
             self.indices.requires_grad = False
         d_model = 32
         self.embedding = nn.Linear(1, d_model)
-        self.wavelength_embedding = nn.Linear(1, d_model)
         self.pos_encoding = nn.Parameter(torch.zeros(1, target_size, d_model))
         encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=4, dim_feedforward=64, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
@@ -49,8 +48,7 @@ class ANN(nn.Module):
         batch_size = outputs.shape[0]
         values = outputs.unsqueeze(2)
         emb_values = self.embedding(values)
-        wavelengths = self.get_indices().unsqueeze(0).expand(batch_size, -1).unsqueeze(2)
-        emb_wave = self.wavelength_embedding(wavelengths)
+        emb_wave = self.get_indices()[None, :, None].expand(batch_size, -1, emb_values.shape[2])
         x = emb_values + emb_wave + self.pos_encoding
         x = self.transformer(x)
         x = x.flatten(start_dim=1)
@@ -73,7 +71,7 @@ class ANN(nn.Module):
 
 
 
-class Algorithm_transformer1(Algorithm):
+class Algorithm_transformer3(Algorithm):
     def __init__(self, dataset, train_x, train_y, test_x, test_y, target_size, fold, scaler_y, mode, train_size, reporter, verbose):
         super().__init__(dataset, train_x, train_y, test_x, test_y, target_size, fold, scaler_y, mode, train_size, reporter, verbose)
 

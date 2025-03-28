@@ -38,8 +38,8 @@ class ANN(nn.Module):
         if self.mode in ["static", "semi"]:
             self.indices.requires_grad = False
         d_model = 32
-        self.embedding = nn.Linear(1, d_model)
-        self.wavelength_embedding = nn.Linear(1, d_model)
+        self.embedding = nn.Sequential(nn.Linear(1, d_model), nn.GELU())
+        self.wavelength_embedding = nn.Sequential(nn.Linear(1, d_model), nn.GELU())
         self.pos_encoding = nn.Parameter(torch.zeros(1, target_size, d_model))
         encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=4, dim_feedforward=64, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
@@ -73,7 +73,7 @@ class ANN(nn.Module):
 
 
 
-class Algorithm_transformer1(Algorithm):
+class Algorithm_transformer2(Algorithm):
     def __init__(self, dataset, train_x, train_y, test_x, test_y, target_size, fold, scaler_y, mode, train_size, reporter, verbose):
         super().__init__(dataset, train_x, train_y, test_x, test_y, target_size, fold, scaler_y, mode, train_size, reporter, verbose)
 

@@ -3,9 +3,9 @@ from task_runner import TaskRunner
 if __name__ == '__main__':
     train_sizes = [0.75]
     verbose = True
-    tag = f"run_32_1_2"
+    tag = f"run_32_2345"
     tasks = {
-        "algorithms": ["transformer1"],
+        "algorithms": ["transformer2","transformer3","transformer4","transformer5"],
         "datasets": ["lucas"],
         "target_sizes": [32],
         "scale_y": ["robust"],
