@@ -12,6 +12,6 @@ if __name__ == '__main__':
         "mode": ["dyn"],
         "train_sizes": train_sizes
     }
-    folds = 1
+    folds = 5
     ev = TaskRunner(tasks,folds,tag,verbose=verbose)
     ev.evaluate()
