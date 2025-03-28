@@ -57,6 +57,7 @@ class ANN(nn.Module):
         self.indices = nn.Parameter(torch.tensor([init_vals[i + 1] for i in range(self.target_size)], requires_grad=False).to(self.device))
         d_model = 24
         encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=4, dim_feedforward=64, batch_first=True)
+        self.wavelength_embedding = nn.Sequential(nn.Linear(32, d_model), nn.GELU())
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
         self.fc_out = nn.Linear(target_size * d_model, 1)
         self.cnn = nn.ModuleList([
@@ -71,12 +72,13 @@ class ANN(nn.Module):
 
     def forward(self, linterp):
         x,i = linterp(self.get_indices())
-        x = x.reshape(-1, 32,1,24)
+        x = x.reshape(-1, 32,1,32)
         x_split = x.unbind(dim=1)
         x = torch.stack([self.cnn[i](x_split[i]) for i in range(self.target_size)], dim=1)
+        i = self.wavelength_embedding(i)
+        x = x + i
         x = self.transformer(x)
         x = x.flatten(start_dim=1)
-        x = x + i
         soc_hat = self.fc_out(x)
         soc_hat = soc_hat.reshape(-1)
         return soc_hat

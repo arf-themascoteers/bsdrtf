@@ -72,7 +72,7 @@ class ANN(nn.Module):
 
     def forward(self, linterp):
         x = linterp(self.get_indices())
-        x = x.reshape(-1, 32,1,24)
+        x = x.reshape(-1, 32,1,32)
         x_split = x.unbind(dim=1)
         x = torch.stack([self.cnn[i](x_split[i]) for i in range(self.target_size)], dim=1)
         x = self.transformer(x)
