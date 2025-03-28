@@ -1,1 +1,1 @@
-TEST=False
+TEST=True
