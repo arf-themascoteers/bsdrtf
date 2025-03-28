@@ -38,20 +38,17 @@ class ANN(nn.Module):
         if self.mode in ["static", "semi"]:
             self.indices.requires_grad = False
         d_model = 32
-        self.embedding = nn.Linear(1, d_model)
-        self.wavelength_embedding = nn.Sequential(nn.Linear(1, d_model), nn.GELU())
-        self.pos_encoding = nn.Parameter(torch.zeros(1, target_size, d_model))
+        self.embedding = nn.Sequential(nn.Linear(1, d_model), nn.GELU())
         encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=4, dim_feedforward=64, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
-        self.fc_out = nn.Linear(self.target_size * d_model, 1)
+        self.fc_out = nn.Linear(target_size * d_model, 1)
     def forward(self, linterp):
         outputs = linterp(self.get_indices())
         batch_size = outputs.shape[0]
         values = outputs.unsqueeze(2)
         emb_values = self.embedding(values)
-        wavelengths = self.get_indices().unsqueeze(0).expand(batch_size, -1).unsqueeze(2)
-        emb_wave = self.wavelength_embedding(wavelengths)
-        x = emb_values + emb_wave + self.pos_encoding
+        emb_wave = self.get_indices()[None, :, None].expand(batch_size, -1, emb_values.shape[2])
+        x = emb_values + emb_wave
         x = self.transformer(x)
         x = x.flatten(start_dim=1)
         soc_hat = self.fc_out(x)
@@ -72,8 +69,7 @@ class ANN(nn.Module):
 
 
 
-
-class Algorithm_transformer4(Algorithm):
+class Algorithm_transformer6(Algorithm):
     def __init__(self, dataset, train_x, train_y, test_x, test_y, target_size, fold, scaler_y, mode, train_size, reporter, verbose):
         super().__init__(dataset, train_x, train_y, test_x, test_y, target_size, fold, scaler_y, mode, train_size, reporter, verbose)
 
@@ -114,9 +110,9 @@ class Algorithm_transformer4(Algorithm):
             optimizer.zero_grad()
             y_hat = self.predict_train()
             mse_loss = self.criterion(y_hat, self.train_y)
-            order_loss = self.ann.get_order_loss()
-            range_loss = self.ann.get_range_loss()
-            loss = mse_loss + order_loss + range_loss
+            # order_loss = self.ann.get_order_loss()
+            # range_loss = self.ann.get_range_loss()
+            loss = mse_loss #+ order_loss + range_loss
             loss.backward()
             optimizer.step()
             if self.verbose:
