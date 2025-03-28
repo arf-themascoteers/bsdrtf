@@ -1,0 +1,1 @@
+algorithm,dataset,target_size,scaler_y,mode,train_size,r2,rmse,rpd,rpiq,r2_o,rmse_o,rpd_o,rpiq_o,train_r2,train_rmse,train_rpd,train_rpiq,train_r2_o,train_rmse_o,train_rpd_o,train_rpiq_o,execution_time,params
