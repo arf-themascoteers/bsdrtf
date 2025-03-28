@@ -44,9 +44,9 @@ class ANN(nn.Module):
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
         self.fc_out = nn.Sequential(
             nn.LayerNorm(target_size * d_model),
-            nn.Linear(target_size * d_model, 64),
+            nn.Linear(target_size * d_model, 16),
             nn.GELU(),
-            nn.Linear(64, 1)
+            nn.Linear(16, 1)
         )
 
     def forward(self, linterp):
