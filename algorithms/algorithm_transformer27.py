@@ -54,6 +54,7 @@ class ANN(nn.Module):
         self.mode = mode
         init_vals = torch.linspace(0.001, 0.99, self.target_size + 2)
         self.indices = nn.Parameter(torch.tensor([init_vals[i + 1] for i in range(self.target_size)], requires_grad=False).to(self.device))
+        self.indices.requires_grad = False
         d_model = 32
         encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=4, dim_feedforward=64, batch_first=True)
         self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
